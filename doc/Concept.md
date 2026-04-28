@@ -136,7 +136,7 @@ curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 ### 2. Створення кластера
 
 ```bash
-# Кластер з 1 server-нодою, 2 agent-нодами та пробросом порту 8080 → 80
+# Кластер з 1 server-нодою, 2 agent-нодами та пробросом порту 8080 (host) → 80 (k3s)
 k3d cluster create demo \
   --agents 2 \
   --port "8080:80@loadbalancer"
@@ -152,10 +152,10 @@ kubectl get nodes
 # k3d-demo-server-0  Ready    control-plane,master   15s   v1.29.x
 ```
 
-### 3. Розгортання Hello World
+### 3. Розгортання Hello World deployment
 
 ```bash
-# Deployment на базі офіційного образу nginx
+# Deployment на базі nginx
 kubectl create deployment hello-world \
   --image=docker.io/nginxdemos/hello:plain-text \
   --replicas=2
@@ -181,9 +181,9 @@ kubectl get svc hello-world
 # NAME          TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
 # hello-world   LoadBalancer   10.43.12.100   172.20.0.2    80:31234/TCP   5s
 ```
-### 5. Traefic ingress
+### 5. Traefic ingress rule
 ```bash
-# Створити маніфест
+# Створити маніфест (localhost як доменне і'мя вибранно для простоти перевірки)
 vi ingress.yaml
 
 apiVersion: networking.k8s.io/v1
@@ -214,7 +214,7 @@ kubectl get  ingress webserver
 ### 6. Перевірка
 
 ```bash
-# Звернення до застосунку через проброшений порт
+# Звернення до застосунку через зовнішній порт: балансер -> ingress -> svc
 curl http://localhost:8080
 
 Server address: 10.42.0.8:80
@@ -223,8 +223,6 @@ Date: 26/Apr/2026:10:41:40 +0000
 URI: /
 Request ID: d2e7d20cc2d695357614273660cd3988
 ```
-
-Або відкрити у браузері: [http://localhost:8080](http://localhost:8080)
 
 ### 7. Прибирання
 

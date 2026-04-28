@@ -1,3 +1,5 @@
+# PoC: Розгортання k3d із ArgoCD
+
 ### 1. Встановлення k3d
 ```bash
 curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
@@ -66,7 +68,8 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 # Додати argocd.ubuntu-vm.home до /etc/hosts
 ip_address argocd.ubuntu-vm.home
 ```
-Відкрити ArgoCD в браузерs: https://argocd.ubuntu-vm.home
+Відкрити ArgoCD в браузері: 
+https://argocd.ubuntu-vm.home
 ```
 Username: admin
 Password: дефолтний пароль
