@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Define command-line arguments
+
+RESOURCE_TYPE=$1
+NAMESPACE=$2
+
+# Validate imput variables
+# Assign default ns if void
+: ${NAMESPACE:="default"}
+[[ -z "$RESOURCE_TYPE" ]] && { printf "Resource is empty, exiting.\nRun help: kubectl kubeplugin --help\n"; exit 1; }
+
+[[ "$1" == "--help" ]] && { printf "Display resource usage: 'Resource, Namespace, Name, CPU, Memory'. \nUsage: kubectl kubeplugin <resource> <namespace>\nAvailable resource: pod|node\n"; exit 1; }
+
+
+# Retrieve resource usage statistics from Kubernetes
+kubectl top $RESOURCE_TYPE -n $NAMESPACE | tail -n +2 | while read line
+do
+  # Extract CPU and memory usage from the output
+  NAME=$(echo $line | awk '{print $1}')
+  CPU=$(echo $line | awk '{print $2}')
+  MEMORY=$(echo $line | awk '{print $3}')
+
+  # Output the statistics to the console
+  # "Resource, Namespace, Name, CPU, Memory"
+  echo $RESOURCE_TYPE, $NAMESPACE, $NAME, $CPU, $MEMORY
+done
